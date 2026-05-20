@@ -1,14 +1,10 @@
 import Image from "next/image"
 import { CheckCircle2, Phone } from "lucide-react"
 import config from "@/lib/config"
-import { LeadEvent } from "@/components/tracking/lead-event"
 
 export default function ThankYouPage() {
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Fire Facebook Lead event once pixel is ready */}
-      <LeadEvent />
-
       <div className="mx-auto max-w-2xl px-4 py-12 md:py-20">
         {/* Confirmation icon */}
         <div className="flex justify-center mb-6">
@@ -112,7 +108,7 @@ export default function ThankYouPage() {
           <div className="space-y-4">
             {[
               { step: "1", title: "We review your property", desc: "Our team looks at your submission and researches the property." },
-              { step: "2", title: "You get a cash offer", desc: "Within 24 hours, we\u2019ll reach out with a fair, no-obligation offer." },
+              { step: "2", title: "You get a cash offer", desc: "Within 24 hours, we’ll reach out with a fair, no-obligation offer." },
               { step: "3", title: "You choose your closing date", desc: "If you accept, you pick the date. We handle the rest." },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-4">
