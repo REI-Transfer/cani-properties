@@ -259,6 +259,10 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         const score = calculateLeadScore(surveyData)
         const quality = leadQuality(score)
         const qualified = isQualifiedForMeta(surveyData)
+        // Excellent / move-in-ready properties must NOT fire the Meta 'Lead' event
+        // (they convert poorly for cash-buyer clients), but the lead is STILL
+        // captured below via /api/submit. We only gate the PIXEL fire, never submission.
+        const fireLead = qualified && surveyData.condition !== 'excellent'
         const dqReason = qualified ? null : disqualifyReasonFor(surveyData)
         const eventId = `lead-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
         const payload = {
@@ -289,7 +293,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           const fbq = (window as { fbq: (...args: unknown[]) => void }).fbq
           // content_name uses the brand from config so each cloned client gets the right label automatically
           const brandName = (typeof window !== 'undefined' && (window as unknown as { __NEXT_DATA__?: { runtimeConfig?: { companyName?: string } } }).__NEXT_DATA__?.runtimeConfig?.companyName) || 'REI Survey'
-          if (qualified) {
+          if (fireLead) {
             fbq('track', 'Lead', {
               value: score * 25, currency: 'USD',
               content_name: `${brandName} Survey`, content_category: 'real_estate',
