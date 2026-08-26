@@ -284,8 +284,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           lead_quality: quality,
           disqualify_reason: dqReason,
           meta_event_id: eventId,
-          meta_event_name: qualified ? 'Lead' : 'LeadLowIntent',
-          meta_value: qualified ? score * 25 : 0,
+          meta_event_name: fireLead ? 'Lead' : 'LeadLowIntent',
+          meta_value: fireLead ? score * 25 : 0,
           gf_sid: readGfSid(),
           ...trackingRef.current,
         }
