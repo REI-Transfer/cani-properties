@@ -59,6 +59,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Address required" }, { status: 400 })
     }
 
+    // Blocklist (Audrey, 2026-10-11): drop before n8n + GoFunnel fan-out.
+    // address = Google formatted_address; match street line + ZIP, normalized.
+    const BLOCKED_PHONES = new Set(["6145708150"])
+    const BLOCKED_EMAILS = new Set(["custerdon33@gmail.com"])
+    const BLOCKED_ADDRESSES = [{ street: "6000 grove city rd", zip: "43123" }]
+    const normAddr = ` ${(data.address || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\broad\b/g, "rd").trim()} `
+    const addressBlocked = BLOCKED_ADDRESSES.some((a) => normAddr.includes(` ${a.street} `) && normAddr.includes(` ${a.zip} `))
+    if (BLOCKED_PHONES.has(phone) || BLOCKED_EMAILS.has(email) || addressBlocked) {
+      return NextResponse.json({ success: false })
+    }
+
     // Add server IP to payload
     const payload = { ...data, server_ip: ip }
 
